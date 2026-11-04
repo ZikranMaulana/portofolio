@@ -123,17 +123,12 @@ export default function App() {
 
   const canvasRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
-  const [cursorTrailing, setCursorTrailing] = useState({ x: -100, y: -100 });
-  const [isHovered, setIsHovered] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [activeTab, setActiveTab] = useState("projects"); // Tab ala referensi: projects / journey / skills
-  const [activeFilter, setActiveFilter] = useState("All");
+  
+  // Tab ala referensi: "projects" | "journey" | "skills"
+  const [activeTab, setActiveTab] = useState("projects"); 
 
-  const filteredProjects = activeFilter === "All" 
-    ? projects 
-    : projects.filter(item => item.category === activeFilter);
-
-  // Background Canvas: Bintang & Planet
+  // Background Canvas Bintang
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -149,14 +144,14 @@ export default function App() {
     };
     window.addEventListener("resize", handleResize);
 
-    const STAR_COUNT = 130;
+    const STAR_COUNT = 120;
     const stars = Array.from({ length: STAR_COUNT }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 1.8 + 0.3,
-      speed: Math.random() * 0.25 + 0.05,
+      size: Math.random() * 1.6 + 0.3,
+      speed: Math.random() * 0.2 + 0.05,
       alpha: Math.random(),
-      alphaChange: (Math.random() * 0.01 + 0.005) * (Math.random() > 0.5 ? 1 : -1),
+      alphaChange: (Math.random() * 0.01 + 0.003) * (Math.random() > 0.5 ? 1 : -1),
     }));
 
     const render = () => {
@@ -168,7 +163,7 @@ export default function App() {
           star.x = Math.random() * width;
         }
         star.alpha += star.alphaChange;
-        if (star.alpha <= 0.15 || star.alpha >= 0.95) star.alphaChange = -star.alphaChange;
+        if (star.alpha <= 0.1 || star.alpha >= 0.9) star.alphaChange = -star.alphaChange;
         ctx.fillStyle = `rgba(224, 242, 254, ${Math.max(0.1, star.alpha)})`;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -184,92 +179,75 @@ export default function App() {
     };
   }, []);
 
-  // Tracking Mouse
+  // Tracking Mouse untuk Spotlight
   useEffect(() => {
     const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    let frameId;
-    const follow = () => {
-      setCursorTrailing((prev) => ({
-        x: prev.x + (mousePos.x - prev.x) * 0.15,
-        y: prev.y + (mousePos.y - prev.y) * 0.15,
-      }));
-      frameId = requestAnimationFrame(follow);
-    };
-    frameId = requestAnimationFrame(follow);
-    return () => cancelAnimationFrame(frameId);
-  }, [mousePos]);
-
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
-
   return (
-    <div className="relative min-h-screen bg-[#030712] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#030712] text-slate-100 font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
       {/* Background Canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
 
-      {/* Cursor Neon */}
+      {/* Spotlight Effect */}
       <div 
-        className="pointer-events-none fixed z-50 w-2.5 h-2.5 rounded-full bg-cyan-300 shadow-[0_0_12px_#22d3ee] -translate-x-1/2 -translate-y-1/2 transition-transform duration-75 ease-out"
-        style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
+        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(37, 99, 235, 0.06), transparent 80%)`
+        }}
       />
 
-      {/* Navbar Minimalis */}
+      {/* Navbar Atas */}
       <nav className="relative z-20 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2 font-mono text-lg font-bold text-white tracking-wider">
-          <span className="text-cyan-400">&lt;/&gt;</span> Zikran Maulana
+          <span className="text-blue-500">&lt;/&gt;</span> Zikran Maulana
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
-          <a href="#about" className="hover:text-cyan-400 transition">About</a>
-          <a href="#content-section" className="hover:text-cyan-400 transition">Portfolio</a>
-          <a href={profile.contact.instagram} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black transition">Contact</a>
+          <a href="#about" className="hover:text-blue-400 transition">About</a>
+          <a href="#portfolio-section" className="hover:text-blue-400 transition">Portfolio</a>
+          <a href={profile.contact.instagram} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white transition">Contact</a>
         </div>
       </nav>
 
-      {/* HERO SECTION LENGKAP */}
-      <section id="about" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-16 flex items-center">
+      {/* HERO SECTION */}
+      <section id="about" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-12 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Kolom Kiri: Teks & Headline */}
           <div className="lg:col-span-4 space-y-5 text-center lg:text-left z-20 order-1">
             <div className="w-12 h-1 bg-white/80 hidden lg:block mb-4" />
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
               I'm <span className="text-white">Zikran,</span> <br />
-              <span className="text-slate-300">a Web Developer</span>
+              <span className="text-slate-400">a Web Developer</span>
             </h1>
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-md mx-auto lg:mx-0">
               {profile.shortBio}
             </p>
             <div className="pt-2 flex justify-center lg:justify-start">
               <a 
-                href="#content-section"
-                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-600 hover:bg-cyan-500 text-white hover:text-black flex items-center justify-center shadow-lg shadow-blue-600/30 transition-all duration-300 hover:scale-110"
+                href="#portfolio-section"
+                className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 transition-all duration-300 hover:scale-110"
               >
-                <span className="text-lg sm:text-xl">↓</span>
+                <span>↓</span>
               </a>
             </div>
           </div>
 
-          {/* Kolom Tengah: Foto Portrait */}
-          <div className="lg:col-span-5 flex justify-center items-end relative min-h-[360px] sm:min-h-[460px] lg:min-h-[560px] z-10 overflow-hidden order-2">
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 sm:w-72 h-64 sm:h-72 bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 blur-[80px] rounded-full pointer-events-none" />
-            <div className="relative w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[420px] h-[400px] sm:h-[480px] lg:h-[560px] flex items-end justify-center">
+          <div className="lg:col-span-5 flex justify-center items-end relative min-h-[360px] sm:min-h-[460px] lg:min-h-[520px] z-10 overflow-hidden order-2">
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-blue-600/15 blur-[90px] rounded-full pointer-events-none" />
+            <div className="relative w-full max-w-[300px] sm:max-w-[360px] h-[400px] sm:h-[480px] flex items-end justify-center">
               <img 
                 src={profile.avatar} 
                 alt={profile.name}
                 onError={(e) => { e.target.onerror = null; e.target.src = "/profile.jpg"; }}
                 className="w-full h-full object-cover object-top filter contrast-[1.05] brightness-95"
               />
-              <div className="absolute inset-x-0 bottom-0 h-32 sm:h-44 bg-gradient-to-t from-[#030712] via-[#030712]/90 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#030712] via-[#030712]/80 to-transparent pointer-events-none" />
             </div>
           </div>
 
-          {/* Kolom Kanan: Terminal Code & Follow Me */}
           <div className="lg:col-span-3 space-y-6 text-center lg:text-left z-20 order-3">
             <div className="space-y-1">
               <h3 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-bold">About Me</h3>
@@ -278,7 +256,7 @@ export default function App() {
               </p>
             </div>
 
-            <div className="max-w-sm mx-auto lg:mx-0 rounded-xl bg-slate-950/90 border border-slate-800 shadow-2xl backdrop-blur-md overflow-hidden text-left font-mono text-xs">
+            <div className="max-w-sm mx-auto lg:mx-0 rounded-xl bg-slate-950/90 border border-slate-800 shadow-2xl overflow-hidden text-left font-mono text-xs">
               <div className="flex items-center justify-between px-3.5 py-2 bg-slate-900/80 border-b border-slate-800">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
@@ -290,7 +268,7 @@ export default function App() {
               <div className="p-3.5 space-y-1 text-slate-300 text-[11px] leading-tight">
                 {terminalCode.map((line) => (
                   <p key={line.label} className="break-all">
-                    <span className="text-cyan-400">"{line.label}"</span>: <span className="text-amber-300">{line.val}</span>,
+                    <span className="text-blue-400">"{line.label}"</span>: <span className="text-amber-300">{line.val}</span>,
                   </p>
                 ))}
               </div>
@@ -298,10 +276,10 @@ export default function App() {
 
             <div className="space-y-2 pt-1">
               <h3 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-bold">Follow Me</h3>
-              <div className="flex justify-center lg:justify-start items-center gap-4 text-slate-400">
-                <a href={profile.contact.github} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">GitHub</a>
-                <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">LinkedIn</a>
-                <a href={profile.contact.instagram} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">Instagram</a>
+              <div className="flex justify-center lg:justify-start items-center gap-4 text-slate-400 text-xs font-mono">
+                <a href={profile.contact.github} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition">GitHub</a>
+                <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition">LinkedIn</a>
+                <a href={profile.contact.instagram} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition">Instagram</a>
               </div>
             </div>
           </div>
@@ -310,11 +288,11 @@ export default function App() {
       </section>
 
       {/* STATS METRICS */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((item, idx) => (
-            <div key={idx} className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-md text-center space-y-1">
-              <div className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-300">
+            <div key={idx} className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-md text-center space-y-1">
+              <div className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
                 {item.value}
               </div>
               <div className="text-xs font-semibold text-slate-200">{item.label}</div>
@@ -324,114 +302,96 @@ export default function App() {
         </div>
       </div>
 
-      {/* PORTFOLIO TAB SECTION (Ala Referensi Alfari dengan Tab Navigasi Atas) */}
-      <div id="content-section" className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-10">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">Portfolio</h2>
+      {/* PORTFOLIO SECTION UTAMA (Gaya Tab Kartu Atas Ala Alfari) */}
+      <div id="portfolio-section" className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-8">
+        <div className="text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Portfolio</h2>
           
-          {/* Tombol Tab Navigasi Utama */}
-          <div className="flex flex-wrap justify-center gap-2 p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 backdrop-blur-md">
+          {/* Menu Tab Navigasi Atas (Persis ala referensi) */}
+          <div className="inline-flex flex-wrap justify-center gap-2 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl backdrop-blur-md">
             <button
               onClick={() => setActiveTab("projects")}
-              className={`px-5 py-2 text-xs font-mono font-semibold rounded-xl transition-all ${
-                activeTab === "projects" ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/25" : "text-slate-400 hover:text-white"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-semibold transition-all ${
+                activeTab === "projects" 
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" 
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              📂 Projects
+              <span>📁</span> Projects
             </button>
             <button
               onClick={() => setActiveTab("journey")}
-              className={`px-5 py-2 text-xs font-mono font-semibold rounded-xl transition-all ${
-                activeTab === "journey" ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/25" : "text-slate-400 hover:text-white"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-semibold transition-all ${
+                activeTab === "journey" 
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" 
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              🎓 Education & Experience
+              <span>🎓</span> Education & Journey
             </button>
             <button
               onClick={() => setActiveTab("skills")}
-              className={`px-5 py-2 text-xs font-mono font-semibold rounded-xl transition-all ${
-                activeTab === "skills" ? "bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/25" : "text-slate-400 hover:text-white"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-semibold transition-all ${
+                activeTab === "skills" 
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" 
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              ⚡ Tech Stack & Arsenal
+              <span>⚡</span> Tech Stack
             </button>
           </div>
         </div>
 
-        {/* KONTEN TAB 1: PROJECTS (Dengan Filter Kategori) */}
+        {/* KONTEN TAB 1: PROJECTS */}
         {activeTab === "projects" && (
-          <div className="space-y-6 animate-fadeIn">
-            {/* Sub-Filter Kategori Proyek */}
-            <div className="flex justify-center gap-2">
-              {["All", "Laravel", "Backend / API"].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveFilter(cat)}
-                  className={`px-3.5 py-1.5 text-xs font-mono rounded-xl transition-all ${
-                    activeFilter === cat ? "bg-blue-600 text-white font-bold" : "bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              {filteredProjects.map((item) => (
-                <div 
-                  key={item.id} 
-                  onClick={() => setSelectedProject(item)}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  className="group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden"
-                >
-                  <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-40 group-hover:opacity-100 transition-opacity duration-300`} />
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono text-slate-500 group-hover:text-cyan-400">{item.tagline}</span>
-                      <span className="text-[11px] font-mono text-cyan-400 opacity-0 group-hover:opacity-100">Inspect System ↗</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-cyan-200">{item.title}</h3>
-                    <p className="text-sm text-slate-400 leading-relaxed">{item.description}</p>
+          <div className="grid gap-6 md:grid-cols-2 pt-4">
+            {projects.map((item) => (
+              <div 
+                key={item.id} 
+                onClick={() => setSelectedProject(item)}
+                className="group relative rounded-2xl bg-slate-900/50 border border-slate-800/80 p-6 flex flex-col justify-between hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-500/10 cursor-pointer overflow-hidden backdrop-blur-md"
+              >
+                <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-40 group-hover:opacity-100 transition-opacity`} />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono text-slate-500 group-hover:text-blue-400">{item.tagline}</span>
+                    <span className="text-[11px] font-mono text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">Details →</span>
                   </div>
-                  <div className="pt-6 space-y-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {item.techStack.map((tech) => (
-                        <span key={tech} className="px-2.5 py-1 text-xs font-mono text-slate-300 bg-slate-800/80 border border-slate-700/60 rounded-md">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between text-xs font-semibold text-slate-400 group-hover:text-cyan-300">
-                      <span>Lihat Blueprint & Solusi</span>
-                      <span>→</span>
-                    </div>
+                  <h3 className="text-xl font-bold text-white group-hover:text-blue-200 transition-colors">{item.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{item.description}</p>
+                </div>
+                <div className="pt-6 space-y-4">
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.techStack.map((tech) => (
+                      <span key={tech} className="px-2.5 py-1 text-xs font-mono text-slate-300 bg-slate-800/80 border border-slate-700/60 rounded-md">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between text-xs font-semibold text-slate-400 group-hover:text-blue-300">
+                    <span>Inspect System</span>
+                    <span>→</span>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* KONTEN TAB 2: JOURNEY / PENDIDIKAN & PENGALAMAN */}
+        {/* KONTEN TAB 2: EDUCATION & JOURNEY */}
         {activeTab === "journey" && (
-          <div className="max-w-3xl mx-auto space-y-8 animate-fadeIn">
-            <div className="relative border-l border-slate-800/80 pl-6 sm:pl-8 ml-2 sm:ml-4 space-y-10">
+          <div className="max-w-2xl mx-auto pt-4 space-y-6">
+            <div className="relative border-l border-slate-800 pl-6 space-y-8 ml-2">
               {experiences.map((exp, idx) => (
                 <div key={idx} className="relative group">
-                  <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-cyan-400 group-hover:border-teal-300 transition-all shadow-[0_0_10px_#22d3ee]" />
-                  <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-md space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                      <span className="text-xs font-mono text-cyan-400 font-semibold">{exp.period}</span>
+                  <div className="absolute -left-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-slate-950 border-2 border-blue-500 group-hover:scale-125 transition-transform shadow-[0_0_8px_#3b82f6]" />
+                  <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800/80 space-y-2 backdrop-blur-md">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-mono text-blue-400 font-semibold">{exp.period}</span>
                       <span className="text-xs font-mono text-slate-500">{exp.institution}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-white">{exp.role}</h3>
-                    <p className="text-sm text-slate-400 leading-relaxed">{exp.description}</p>
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {exp.skills.map((s) => (
-                        <span key={s} className="px-2 py-0.5 text-[11px] font-mono text-slate-400 bg-slate-800/60 rounded">{s}</span>
-                      ))}
-                    </div>
+                    <h3 className="text-base font-bold text-white">{exp.role}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">{exp.description}</p>
                   </div>
                 </div>
               ))}
@@ -439,12 +399,12 @@ export default function App() {
           </div>
         )}
 
-        {/* KONTEN TAB 3: SKILLS / TECH STACK */}
+        {/* KONTEN TAB 3: TECH STACK */}
         {activeTab === "skills" && (
-          <div className="grid gap-6 sm:grid-cols-3 animate-fadeIn">
+          <div className="grid gap-6 sm:grid-cols-3 pt-4">
             {skills.map((group) => (
-              <div key={group.category} className={`p-6 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-slate-800 ${group.glow}`}>
-                <h3 className="text-base font-semibold text-white tracking-wide mb-4">{group.category}</h3>
+              <div key={group.category} className={`p-6 rounded-2xl bg-slate-900/50 border border-slate-800 backdrop-blur-md ${group.glow}`}>
+                <h3 className="text-sm font-semibold text-white tracking-wide mb-4">{group.category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {group.items.map((skill) => (
                     <span key={skill} className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/60 border border-slate-700/40 rounded-lg">
@@ -461,32 +421,29 @@ export default function App() {
 
       {/* MODAL DETAIL PROYEK */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedProject(null)}>
-          <div className="relative w-full max-w-2xl max-h-[88vh] flex flex-col rounded-2xl bg-slate-900/95 border border-slate-700/80 shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-start justify-between p-5 sm:p-6 border-b border-slate-800 bg-slate-900/90">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedProject(null)}>
+          <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start justify-between p-5 border-b border-slate-800">
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-cyan-400">{selectedProject.tagline}</span>
-                <h3 className="text-xl sm:text-2xl font-bold text-white">{selectedProject.title}</h3>
+                <span className="text-xs font-mono text-blue-400">{selectedProject.tagline}</span>
+                <h3 className="text-xl font-bold text-white">{selectedProject.title}</h3>
               </div>
-              <button onClick={() => setSelectedProject(null)} className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setSelectedProject(null)} className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✕</button>
             </div>
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-5 text-slate-300">
-              <div>
-                <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold mb-1">Ringkasan Sistem</h4>
-                <p className="text-sm leading-relaxed">{selectedProject.description}</p>
+            <div className="p-5 overflow-y-auto space-y-4 text-slate-300 text-xs sm:text-sm">
+              <p className="leading-relaxed">{selectedProject.description}</p>
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                <h4 className="font-mono uppercase text-blue-400 font-bold text-[11px]">Arsitektur & Pendekatan Teknis</h4>
+                <p>{selectedProject.architecture}</p>
               </div>
-              <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/90 space-y-1">
-                <h4 className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-bold">⚡ Arsitektur & Pendekatan Teknis</h4>
-                <p className="text-xs sm:text-sm">{selectedProject.architecture}</p>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/90 space-y-1">
-                <h4 className="text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">🛠 Tantangan & Solusi</h4>
-                <p className="text-xs sm:text-sm">{selectedProject.challenge}</p>
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                <h4 className="font-mono uppercase text-amber-400 font-bold text-[11px]">Tantangan & Solusi</h4>
+                <p>{selectedProject.challenge}</p>
               </div>
             </div>
-            <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-900/90 flex justify-end gap-3">
-              <a href={selectedProject.githubUrl} target="_blank" rel="noreferrer" className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">Buka GitHub</a>
-              <button onClick={() => setSelectedProject(null)} className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-semibold">Tutup</button>
+            <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex justify-end gap-3">
+              <a href={selectedProject.githubUrl} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">GitHub</a>
+              <button onClick={() => setSelectedProject(null)} className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold">Tutup</button>
             </div>
           </div>
         </div>
