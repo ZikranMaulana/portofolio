@@ -8,7 +8,7 @@ const portfolioData = {
     shortBio: "Membangun sistem informasi terintegrasi, arsitektur RESTful API yang scalable, dan aplikasi web modern berbasis performa tinggi.",
     avatar: "/zikran.jpg",
     contact: {
-      instagram : "https://www.instagram.com/zkrn.mlna?dlrf=MWZtYnVxN3RudzE3cw==",
+      instagram: "https://www.instagram.com/zkrn.mlna?dlrf=MWZtYnVxN3RudzE3cw==",
       github: "https://github.com/ZikranMaulana",
       linkedin: "https://www.linkedin.com/in/zikran-maulana-971046277"
     }
@@ -351,12 +351,19 @@ export default function App() {
           <a href="#about" className="hover:text-cyan-400 transition">About</a>
           <a href="#projects" className="hover:text-cyan-400 transition">Projects</a>
           <a href="#journey" className="hover:text-cyan-400 transition">Journey</a>
-          <a href={`mailto:${profile.contact.email}`} className="px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black transition">Contact</a>
+          <a 
+            href={profile.contact.instagram} 
+            target="_blank" 
+            rel="noreferrer" 
+            className="px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black transition"
+          >
+            Contact
+          </a>
         </div>
       </nav>
 
-{/* HERO SECTION RESPONSIF */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-16 flex items-center">
+      {/* HERO SECTION RESPONSIF */}
+      <section id="about" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-16 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
           {/* Kolom Kiri: Teks & Headline Utama */}
@@ -447,7 +454,7 @@ export default function App() {
               <div className="flex justify-center lg:justify-start items-center gap-4 text-slate-400">
                 <a href={profile.contact.github} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">GitHub</a>
                 <a href={profile.contact.linkedin} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">LinkedIn</a>
-                <a href={`mailto:${profile.contact.email}`} className="hover:text-cyan-400 transition font-mono text-xs">Email</a>
+                <a href={profile.contact.instagram} target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition font-mono text-xs">Instagram</a>
               </div>
             </div>
 
