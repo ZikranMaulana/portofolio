@@ -71,6 +71,7 @@ const portfolioData = {
       id: "psb-online",
       title: "Sistem PSB IBS RIAU",
       tagline: "Student Admission Portal",
+      category: "Laravel", // Tambahkan kategori
       description: "Portal Penerimaan Santri/Siswa Baru terintegrasi: registrasi mandiri, verifikasi berkas, seleksi, hingga pengumuman kelulusan.",
       architecture: "Arsitektur modular di Laravel dengan generator nomor registrasi unik dan validasi berkas multi-tahap.",
       challenge: "Menjaga stabilitas server dan keutuhan data saat lonjakan pendaftaran massal bersamaan.",
@@ -82,6 +83,7 @@ const portfolioData = {
       id: "sim-akademik",
       title: "SIM Akademik",
       tagline: "Academic Management Platform",
+      category: "Laravel", // Tambahkan kategori
       description: "Sistem Informasi Manajemen Akademik terpadu dengan hak akses multi-role (Admin, Guru, Wali Kelas), mengelola presensi, kurikulum, dan rapor.",
       architecture: "Role-Based Access Control (RBAC) ketat dengan pemisahan otorisasi nilai dan relasi database teroptimasi.",
       challenge: "Menghitung agregasi kalkulasi bobot nilai dinamis tanpa membebani performa query database.",
@@ -93,6 +95,7 @@ const portfolioData = {
       id: "api-cashless",
       title: "Cashless Transaction REST API",
       tagline: "Secure Payment Ecosystem",
+      category: "Backend / API", // Tambahkan kategori
       description: "Backend API transaksi non-tunai kantin sekolah, manajemen saldo virtual santri, dan riwayat mutasi otomatis.",
       architecture: "RESTful API dengan otentikasi token dan isolasi transaksi ACID untuk menjamin keakuratan nominal saldo.",
       challenge: "Mencegah race condition (double spending) pada transaksi saldo saat antrean kasir kantin padat.",
@@ -104,6 +107,7 @@ const portfolioData = {
       id: "performance-360",
       title: "Sistem Penilaian Kinerja 360°",
       tagline: "Enterprise Evaluation System",
+      category: "Laravel", // Tambahkan kategori
       description: "Platform penilaian performa multi-evaluator berbasis web yang mengkalkulasi skor objektif metode 360 derajat.",
       architecture: "Algoritma kalkulasi bobot otomatis antar penilai dengan visualisasi kompetensi spider chart.",
       challenge: "Menjaga anonimitas penilaian antar kolega kerja sekaligus menghasilkan analitik komprehensif.",
@@ -122,6 +126,10 @@ export default function App() {
   const [cursorTrailing, setCursorTrailing] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("All");
+  const filteredProjects = activeFilter === "All" 
+    ? projects 
+    : projects.filter(item => item.category === activeFilter);
 
   // Scroll Reveal Observer (Animasi Muncul Saat Discroll)
   useEffect(() => {
@@ -482,18 +490,36 @@ export default function App() {
           ))}
         </section>
 
-        {/* Projects Showcase (Reveal on Scroll dengan Stagger Delay) */}
+        {/* Projects Showcase dengan Tombol Filter Interaktif */}
         <section id="projects" className="reveal-item space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <div className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-400 mb-2">Portfolio Showcase</div>
               <h2 className="text-3xl font-bold tracking-tight text-white">Proyek Unggulan</h2>
             </div>
-            <p className="text-xs text-slate-500 font-mono">Klik kartu untuk detail arsitektur</p>
+            
+            {/* TOMBOL KATEGORI FILTER INTERAKTIF */}
+            <div className="flex flex-wrap gap-2">
+              {["All", "Laravel", "Backend / API"].map((cat) => (
+                <button
+                  key={cat}
+                  // Saat tombol diklik, state activeFilter akan berubah sesuai nama tombolnya
+                  onClick={() => setActiveFilter(cat)}
+                  className={`px-3.5 py-1.5 text-xs font-mono rounded-xl transition-all duration-300 ${
+                    activeFilter === cat
+                      ? "bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/25"
+                      : "bg-slate-900/80 text-slate-400 border border-slate-800 hover:border-cyan-500/40 hover:text-white"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* GRID PROYEK: Menggunakan filteredProjects, bukan projects biasa */}
           <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((item, index) => (
+            {filteredProjects.map((item, index) => (
               <div 
                 key={item.id} 
                 onClick={() => setSelectedProject(item)}
@@ -536,38 +562,6 @@ export default function App() {
                   <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between text-xs font-semibold text-slate-400 group-hover:text-cyan-300 transition-colors">
                     <span>Lihat Blueprint & Solusi</span>
                     <span>→</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Experience Timeline (Reveal on Scroll) */}
-        <section id="journey" className="reveal-item space-y-8">
-          <div>
-            <div className="inline-block text-xs font-mono uppercase tracking-widest text-emerald-400 mb-2">Journey</div>
-            <h2 className="text-3xl font-bold tracking-tight text-white">Pengalaman & Rekam Jejak</h2>
-          </div>
-
-          <div className="relative border-l border-slate-800/80 pl-6 sm:pl-8 ml-2 sm:ml-4 space-y-10">
-            {experiences.map((exp, idx) => (
-              <div key={idx} className="relative group">
-                <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-cyan-400 group-hover:border-teal-300 group-hover:scale-125 transition-all shadow-[0_0_10px_#22d3ee]" />
-
-                <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 backdrop-blur-md group-hover:border-slate-700 transition space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                    <span className="text-xs font-mono text-cyan-400 font-semibold">{exp.period}</span>
-                    <span className="text-xs font-mono text-slate-500">{exp.institution}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white">{exp.role}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{exp.description}</p>
-                  <div className="flex flex-wrap gap-1.5 pt-2">
-                    {exp.skills.map((s) => (
-                      <span key={s} className="px-2 py-0.5 text-[11px] font-mono text-slate-400 bg-slate-800/60 rounded">
-                        {s}
-                      </span>
-                    ))}
                   </div>
                 </div>
               </div>
