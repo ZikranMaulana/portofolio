@@ -523,8 +523,8 @@ export default function App() {
                 onClick={() => setSelectedProject(item)}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                // Perhatikan: kelas reveal-item dipindah ke sini agar aman saat difilter
-                className="reveal-item group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden revealed"
+                // Hapus kelas "reveal-item" dari sini agar kartu tidak transparan/hilang saat difilter
+                className="group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden"
                 style={{ transitionDelay: `${index * 120}ms` }}
               >
                 <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-40 group-hover:opacity-100 transition-opacity duration-300`} />
