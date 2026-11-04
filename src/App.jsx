@@ -491,19 +491,18 @@ export default function App() {
         </section>
 
         {/* Projects Showcase dengan Tombol Filter Interaktif */}
-        <section id="projects" className="reveal-item space-y-8">
+        <section id="projects" className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <div className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-400 mb-2">Portfolio Showcase</div>
               <h2 className="text-3xl font-bold tracking-tight text-white">Proyek Unggulan</h2>
             </div>
             
-            {/* TOMBOL KATEGORI FILTER INTERAKTIF */}
+            {/* Tombol Kategori Filter */}
             <div className="flex flex-wrap gap-2">
               {["All", "Laravel", "Backend / API"].map((cat) => (
                 <button
                   key={cat}
-                  // Saat tombol diklik, state activeFilter akan berubah sesuai nama tombolnya
                   onClick={() => setActiveFilter(cat)}
                   className={`px-3.5 py-1.5 text-xs font-mono rounded-xl transition-all duration-300 ${
                     activeFilter === cat
@@ -517,7 +516,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* GRID PROYEK: Menggunakan filteredProjects, bukan projects biasa */}
           <div className="grid gap-6 md:grid-cols-2">
             {filteredProjects.map((item, index) => (
               <div 
@@ -525,7 +523,8 @@ export default function App() {
                 onClick={() => setSelectedProject(item)}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                className="reveal-item group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden"
+                // Perhatikan: kelas reveal-item dipindah ke sini agar aman saat difilter
+                className="reveal-item group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden revealed"
                 style={{ transitionDelay: `${index * 120}ms` }}
               >
                 <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-40 group-hover:opacity-100 transition-opacity duration-300`} />
