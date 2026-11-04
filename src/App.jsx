@@ -8,7 +8,7 @@ const portfolioData = {
     shortBio: "Membangun sistem informasi terintegrasi, arsitektur RESTful API yang scalable, dan aplikasi web modern berbasis performa tinggi.",
     avatar: "/zikran.jpg",
     contact: {
-      email: "maulanazikran602@gmail.com",
+      instagram : "https://www.instagram.com/zkrn.mlna?dlrf=MWZtYnVxN3RudzE3cw==",
       github: "https://github.com/ZikranMaulana",
       linkedin: "https://www.linkedin.com/in/zikran-maulana-971046277"
     }
@@ -475,7 +475,7 @@ export default function App() {
           ))}
         </section>
 
-        {/* Projects Showcase (Reveal on Scroll) */}
+        {/* Projects Showcase (Reveal on Scroll dengan Stagger Delay) */}
         <section id="projects" className="reveal-item space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
@@ -486,13 +486,14 @@ export default function App() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((item) => (
+            {projects.map((item, index) => (
               <div 
                 key={item.id} 
                 onClick={() => setSelectedProject(item)}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                className="group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/60 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/10 cursor-pointer overflow-hidden"
+                className="reveal-item group relative rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 flex flex-col justify-between hover:border-cyan-500/65 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/15 cursor-pointer overflow-hidden"
+                style={{ transitionDelay: `${index * 120}ms` }}
               >
                 <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${item.accent} opacity-40 group-hover:opacity-100 transition-opacity duration-300`} />
 
