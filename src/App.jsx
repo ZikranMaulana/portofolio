@@ -131,23 +131,27 @@ export default function App() {
     ? projects 
     : projects.filter(item => item.category === activeFilter);
 
-  // Scroll Reveal Observer (Animasi Muncul Saat Discroll)
+  // Scroll Reveal Observer (Dapat Berulang saat Scroll Naik / Turun)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("revealed");
+          } else {
+            // Jika elemen keluar layar (baik ke atas maupun ke bawah), 
+            // kelas "revealed" dicabut agar animasinya ter-trigger ulang saat dilewati lagi!
+            entry.target.classList.remove("revealed");
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 } // Memicu lebih cepat saat elemen mulai terlihat
     );
 
     const elements = document.querySelectorAll(".reveal-item");
     elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    return () => observer.observe && observer.disconnect();
   }, []);
 
   // Background Canvas: Bintang, Meteor & Planet

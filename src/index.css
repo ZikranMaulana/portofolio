@@ -4,15 +4,16 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Animasi Scroll Reveal yang Lebih Dinamis & Premium */
+/* Animasi 3D Space Reveal yang Dinamis & Timbal-Balik */
 .reveal-item {
   opacity: 0;
-  transform: translateY(45px) scale(0.98);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(60px) rotateX(15deg) scale(0.95);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
+  perspective: 1000px;
 }
 
 .reveal-item.revealed {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0) rotateX(0deg) scale(1);
 }
